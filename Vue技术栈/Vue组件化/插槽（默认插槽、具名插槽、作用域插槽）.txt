@@ -1,0 +1,79 @@
+插槽：
+1>使用：
+a.插槽用在子组件中，使用<slot></slot>标签。然后父组件在使用子组件的时候在子组件标签中添加的内容就能传到子组件中，<slot></slot>就是用来存放父组件在子组件标签中放置的内容的。
+b.插槽就是Vue实现的一套内容分发的API，将<slot></slot>元素作为承载分发内容的出口。
+c.插槽就相当于在子组件中留出个位置给父组件，如果父组件中有内容传进来，那么就放到slot中。
+d.没有插槽的情况下在组件标签内些一些内容是不起任何作用的，当我在组件中声明了slot元素后，在组件元素内写的内容就会跑到它这里.
+2>默认插槽
+//  组件（父）
+  <my-component>
+    <p>hello,world!</p>
+  </my-component>
+
+//  子组件
+    <div class="child-page">
+        <h1>子页面</h1>
+        <slot></slot>  //  替换为 <p>hello,world!</p>
+    </div>
+
+//  渲染结果
+    <div class="child-page">
+        <h1>子页面</h1>
+        <p>hello,world!</p>
+    </div>
+3>具名插槽
+a.在组件中，我给插槽起个名字，一个名字叫"girl"，一个名字叫"boy"，还有一个不起名字
+b.代码
+<div id="app">
+    <child>
+        <template slot="girl">
+            漂亮、美丽、购物、逛街
+        </template>
+        <template slot="boy">
+            帅气、才实
+        </template>
+        <div>
+            无名无姓，普通的插槽
+        </div>
+    </child>
+</div>
+
+<script type="text/javascript">
+    //定义组件
+    Vue.component('child',{
+        template:`<div>
+                    <slot name="girl"></slot>
+                    <div style="height:1px;background-color:red;"></div>
+                    <slot name="boy"></slot>
+                    <div style="height:1px;background-color:red;"></div>
+                    <slot></slot>
+                   </div>`
+    })
+    //创建vue实例
+    var vm = new Vue({
+        el: "#app",
+        data:{
+            
+        }
+    })
+</script>
+c.结果
+
+4>作用域插槽
+a.子组件会向父组件传递的作用域里传递数据
+b.代码
+//子组件
+<slot name="footer" foo="foo" bar="bar">
+
+//父组件
+// v-slot:进行绑定
+//footer是对应子组件的name名
+//slotProps：子组件内传递的各个属性的对象
+  <template v-slot:footer="slotProps">
+    {{slotProps.foo}} - {{slotProps.bar}}
+  </template>
+5>注意：
+a.具名插槽的内容必须使用模板<template></template>包裹
+b.不指定名字的模板插入匿名插槽中，推荐使用具名插槽，方便代码追踪且直观清楚
+c.匿名插槽具有隐藏的名字"default"
+d.vue2.6.0之后v-slot替代slot 和 slot-scope
